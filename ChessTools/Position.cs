@@ -2,6 +2,16 @@
 
 namespace Chess
 {
+    public enum PositionState
+    {
+        Unknown,
+        Invalid,
+        Valid,
+        Check,
+        Checkmate,
+        Stalemate
+    }
+
     public interface IReadOnlyPosition
     {
         Piece this[Coordinate c] { get; }
@@ -11,38 +21,43 @@ namespace Chess
         bool CanBlackCastlingKingSide { get; }
         bool CanBlackCastlingQueenSide { get; }
         Color SideToMove { get; }
+        PositionState State { get; }
     }
 
     public class Position : IReadOnlyPosition
     {
         private Piece[] _fields;
+        private PositionState _state;
+        private Color _sideToMove;
+
         public byte EPFile { get; set; }
         public bool CanWhiteCastlingKingSide { get; set; }
         public bool CanWhiteCastlingQueenSide { get; set; }
         public bool CanBlackCastlingKingSide { get; set; }
         public bool CanBlackCastlingQueenSide { get; set; }
-        public Color SideToMove { get; set; }
 
         public Position()
         {
             _fields = new Piece[64];
             EPFile = 0;
+            State = PositionState.Unknown;
         }
 
         public Position(IReadOnlyPosition p)
         {
+            _fields = new Piece[64];
+            for (byte i=0; i<64; i++)
+            {
+                _fields[i] = p[i];
+            }
+
             EPFile = p.EPFile;
             CanWhiteCastlingKingSide = p.CanWhiteCastlingKingSide;
             CanWhiteCastlingQueenSide = p.CanWhiteCastlingQueenSide;
             CanBlackCastlingKingSide = p.CanBlackCastlingKingSide;
             CanBlackCastlingQueenSide = p.CanBlackCastlingQueenSide;
             SideToMove = p.SideToMove;
-           
-            _fields = new Piece[64];
-            for (byte i=0; i<64; i++)
-            {
-                _fields[i] = p[i];
-            }
+            State = p.State;
         }
 
         public void SetInitial()
@@ -89,6 +104,8 @@ namespace Chess
             this["f8"] = new Piece { Type = PieceType.Bishop, Color = Color.Black };
             this["g8"] = new Piece { Type = PieceType.Knight, Color = Color.Black };
             this["h8"] = new Piece { Type = PieceType.Rook, Color = Color.Black };
+
+            State = PositionState.Valid;
         }
 
         public Piece this[Coordinate c]
@@ -100,6 +117,32 @@ namespace Chess
             set
             {
                 _fields[c] = value;
+                State = PositionState.Unknown;
+            }
+        }
+
+        public PositionState State
+        {
+            get
+            {
+                return _state;
+            }
+            internal set
+            {
+                _state = value;
+            }
+        }
+
+        public Color SideToMove
+        {
+            get
+            {
+                return _sideToMove;
+            }
+            set
+            {
+                _sideToMove = value;
+                State = PositionState.Unknown;
             }
         }
 

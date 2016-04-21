@@ -188,6 +188,28 @@ namespace Chess
             throw new NotImplementedException();
         }
 
+        public void CalcPositionState(Position position)
+        {
+            if (!IsLegalPosition(position))
+                position.State = PositionState.Invalid;
+            else
+            {
+                if (IsInCheck(position))
+                {
+                    if (IsCheckmate(position))
+                        position.State = PositionState.Checkmate;
+                    else
+                        position.State = PositionState.Check;
+                }
+                else if (IsStalemate(position))
+                {
+                    position.State = PositionState.Stalemate;
+                }
+                else
+                    position.State = PositionState.Valid;
+            }
+        }
+
         public bool IsLegalPosition(Position position)
         {
             int whiteKings = 0, blackKings = 0;
