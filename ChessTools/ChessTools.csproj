@@ -39,13 +39,20 @@
   <ItemGroup>
     <Compile Include="BaseTypes.cs" />
     <Compile Include="Coordinate.cs" />
+    <Compile Include="ExpertMoveBase.cs" />
+    <Compile Include="ExpertMoveBishop.cs" />
+    <Compile Include="ExpertMoveKnight.cs" />
+    <Compile Include="ExpertMovePawn.cs" />
+    <Compile Include="ExpertMoveQueen.cs" />
+    <Compile Include="ExpertMoveRook.cs" />
+    <Compile Include="ExpertRules.cs" />
     <Compile Include="Formatters\FENFormatter.cs" />
     <Compile Include="Game.cs" />
     <Compile Include="Move.cs" />
     <Compile Include="Formatters\PGNFormatter.cs" />
     <Compile Include="Position.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RulesExpert.cs" />
+    <Compile Include="ExpertMoveKing.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

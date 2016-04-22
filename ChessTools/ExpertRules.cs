@@ -6,127 +6,6 @@ using System.Threading.Tasks;
 
 namespace Chess
 {
-    abstract class BaseMoveExpert
-    {
-        public virtual bool IsLegalMove(Position position, Move move)
-        {
-            Piece piece = position[move.From];
-            return piece == move.Piece;
-        }
-
-        public abstract void PerformMove(Position position, Move move);
-        public abstract Move[] GetPossibleMoves(Position position, Coordinate fromField);
-        public abstract Coordinate[] GetAttackedFields(Position position, Coordinate fromField);
-    }
-
-    class KingMoveExpert : BaseMoveExpert
-    {
-        public override Coordinate[] GetAttackedFields(Position position, Coordinate fromField)
-        {
-            throw new NotImplementedException();
-        }
-
-        public override Move[] GetPossibleMoves(Position position, Coordinate fromField)
-        {
-            throw new NotImplementedException();
-        }
-
-        public override void PerformMove(Position position, Move move)
-        {
-            throw new NotImplementedException();
-        }
-    }
-
-    class QueenMoveExpert : BaseMoveExpert
-    {
-        public override Coordinate[] GetAttackedFields(Position position, Coordinate fromField)
-        {
-            throw new NotImplementedException();
-        }
-
-        public override Move[] GetPossibleMoves(Position position, Coordinate fromField)
-        {
-            throw new NotImplementedException();
-        }
-
-        public override void PerformMove(Position position, Move move)
-        {
-            throw new NotImplementedException();
-        }
-    }
-
-    class RookMoveExpert : BaseMoveExpert
-    {
-        public override Coordinate[] GetAttackedFields(Position position, Coordinate fromField)
-        {
-            throw new NotImplementedException();
-        }
-
-        public override Move[] GetPossibleMoves(Position position, Coordinate fromField)
-        {
-            throw new NotImplementedException();
-        }
-
-        public override void PerformMove(Position position, Move move)
-        {
-            throw new NotImplementedException();
-        }
-    }
-
-    class BishopMoveExpert : BaseMoveExpert
-    {
-        public override Coordinate[] GetAttackedFields(Position position, Coordinate fromField)
-        {
-            throw new NotImplementedException();
-        }
-
-        public override Move[] GetPossibleMoves(Position position, Coordinate fromField)
-        {
-            throw new NotImplementedException();
-        }
-
-        public override void PerformMove(Position position, Move move)
-        {
-            throw new NotImplementedException();
-        }
-    }
-
-    class KnightMoveExpert : BaseMoveExpert
-    {
-        public override Coordinate[] GetAttackedFields(Position position, Coordinate fromField)
-        {
-            throw new NotImplementedException();
-        }
-
-        public override Move[] GetPossibleMoves(Position position, Coordinate fromField)
-        {
-            throw new NotImplementedException();
-        }
-
-        public override void PerformMove(Position position, Move move)
-        {
-            throw new NotImplementedException();
-        }
-    }
-
-    class PawnMoveExpert : BaseMoveExpert
-    {
-        public override Coordinate[] GetAttackedFields(Position position, Coordinate fromField)
-        {
-            throw new NotImplementedException();
-        }
-
-        public override Move[] GetPossibleMoves(Position position, Coordinate fromField)
-        {
-            throw new NotImplementedException();
-        }
-
-        public override void PerformMove(Position position, Move move)
-        {
-            throw new NotImplementedException();
-        }
-    }
-
     class RulesExpert
     {
         private BaseMoveExpert _kingMoveExpert;
@@ -155,6 +34,8 @@ namespace Chess
 
         public Move[] GetPossibleMoves(Position position, Coordinate[] fromFields)
         {
+            List<Move> _moves = new List<Move>();
+
             // TODO
 
             return null;
@@ -215,7 +96,7 @@ namespace Chess
             int whiteKings = 0, blackKings = 0;
             bool isPawnOnEdge = false;
 
-            for(byte i=0; i<64; i++)
+            for (byte i = 0; i < 64; i++)
             {
                 Coordinate c = i;
                 Piece p = position[c];
@@ -245,7 +126,7 @@ namespace Chess
             else
                 isLegal = false;
 
-            return  isLegal;
+            return isLegal;
         }
 
         public void PerformMove(Position position, Move move)
@@ -258,7 +139,7 @@ namespace Chess
         {
             BaseMoveExpert moveExpert = null;
 
-            switch(pieceType)
+            switch (pieceType)
             {
                 case PieceType.King:
                     moveExpert = _kingMoveExpert;

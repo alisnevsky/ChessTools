@@ -26,6 +26,7 @@ namespace Chess
 
     public class Position : IReadOnlyPosition
     {
+        private static RulesExpert _rulesExpert = new RulesExpert();
         private Piece[] _fields;
         private PositionState _state;
         private Color _sideToMove;
@@ -125,6 +126,9 @@ namespace Chess
         {
             get
             {
+                if (_state == PositionState.Unknown)
+                    _rulesExpert.CalcPositionState(this);
+
                 return _state;
             }
             internal set
@@ -148,7 +152,7 @@ namespace Chess
 
         public void PerformMove(Move m)
         {
-            throw new NotImplementedException();
+            _rulesExpert.PerformMove(this, m);
         }
     }
 }
