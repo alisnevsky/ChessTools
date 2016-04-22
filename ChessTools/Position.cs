@@ -126,8 +126,10 @@ namespace Chess
         {
             get
             {
-                if (_state == PositionState.Unknown)
-                    _rulesExpert.CalcPositionState(this);
+                //Uncomment after setting State on PerformMove
+                //
+                //if (_state == PositionState.Unknown)
+                //    _rulesExpert.CalcPositionState(this);
 
                 return _state;
             }

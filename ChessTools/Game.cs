@@ -73,7 +73,9 @@ namespace Chess
 
         public void AddMove(Move move)
         {
+            _currentPosition.PerformMove(move);
             _moves.Add(move);
+            _currentMoveIdx++;
         }
 
         public ushort FirstMoveNo

@@ -35,6 +35,8 @@ namespace Chess.Formatters
 
     public class PGNFormatter
     {
+        private static RulesExpert _rulesExpert = new RulesExpert();
+
         private bool _expectedFirstLine;
         private bool _expectedHeader;
         private bool _expectedMoves;
@@ -286,7 +288,13 @@ namespace Chess.Formatters
                 s = s.Remove(pos, 2);
 
                 // Field#2 File or/and rank
-                // TODO
+                Coordinate fromField;
+                if (TryFindFromField(s, piece.Type, move.To, out fromField))
+                {
+                    move.From = fromField;
+                }
+                else
+                    throw new PGNFormatterException($"Incorrect move [{token}] in line: {_currentLine}");
             }
 
             if (sResult.Length > 1)
@@ -319,6 +327,104 @@ namespace Chess.Formatters
             {
                 _currentColor = Color.Black;
             }
+        }
+
+        private bool TryFindFromField(string sFileRank, PieceType pieceType, Coordinate toField, out Coordinate fromField)
+        {
+            bool result = false;
+            Position position = new Position(_game.GetCurrentPosition());
+            Color sideToMove = position.SideToMove;
+            List<Coordinate> fields = new List<Coordinate>();
+            Move[] possibleMoves;
+            Piece piece;
+            byte file;
+            byte rank;
+
+            fromField = "a1";
+
+            if (sFileRank.Length == 2)
+            {
+                fromField = sFileRank;
+
+                piece = position[fromField];
+
+                if (piece.Color == sideToMove && piece.Type == pieceType)
+                    fields.Add(fromField);
+            }
+            else if (sFileRank.Length <= 1)
+            {
+                for (byte c = 0; c < 64; c++)
+                {
+                    piece = position[c];
+
+                    if (piece.Color == sideToMove && piece.Type == pieceType)
+                        fields.Add(c);
+                }
+            }
+
+            possibleMoves = _rulesExpert.GetPossibleMoves(position, fields.ToArray());
+                
+            if (sFileRank.Length == 2)
+            {
+                int cnt = 0;
+
+                foreach (Move m in possibleMoves)
+                {
+                    if (m.To == toField)
+                    {
+                        fromField = m.From;
+                        if (++cnt > 1) break;
+                    }
+                }
+
+                result = cnt == 1;
+            }
+            else if (sFileRank.Length == 1 && Coordinate.TryParseFile(sFileRank[0], out file))
+            {
+                int cnt = 0;
+
+                foreach(Move m in possibleMoves)
+                {
+                    if (m.To == toField && m.From.File == file)
+                    {
+                        fromField = m.From;
+                        if (++cnt > 1) break;
+                    }
+                }
+
+                result = cnt == 1;
+            }
+            else if (sFileRank.Length == 1 && Coordinate.TryParseRank(sFileRank[0], out rank))
+            {
+                int cnt = 0;
+
+                foreach (Move m in possibleMoves)
+                {
+                    if (m.To == toField && m.From.Rank == rank)
+                    {
+                        fromField = m.From;
+                        if (++cnt > 1) break;
+                    }
+                }
+
+                result = cnt == 1;
+            }
+            else if (sFileRank.Length == 0)
+            {
+                int cnt = 0;
+
+                foreach (Move m in possibleMoves)
+                {
+                    if (m.To == toField)
+                    {
+                        fromField = m.From;
+                        if (++cnt > 1) break;
+                    }
+                }
+
+                result = cnt == 1;
+            }
+            return result;
         }
 
         private void ParseLineAsMoveList(string line)

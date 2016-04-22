@@ -27,25 +27,51 @@ namespace Chess
 
         public Move[] GetPossibleMoves(Position position)
         {
-            // TODO
+            List<Coordinate> fields = new List<Coordinate>();
+            Move[] moves;
 
-            return null;
+            for (byte i = 0; i < 64; i++)
+            {
+                Coordinate c = i;
+                Piece p = position[c];
+
+                if (p.Type != PieceType.None && p.Color == position.SideToMove)
+                    fields.Add(c);
+            }
+
+            moves = GetPossibleMoves(position, fields.ToArray());
+
+            return moves;
         }
 
         public Move[] GetPossibleMoves(Position position, Coordinate[] fromFields)
         {
-            List<Move> _moves = new List<Move>();
+            List<Move> allMoves = new List<Move>();
+            Move[] moves;
 
-            // TODO
+            foreach (Coordinate c in fromFields)
+            {
+                moves = GetPossibleMoves(position, c);
+                allMoves.AddRange(moves);
+            }
 
-            return null;
+            return allMoves.ToArray();
         }
 
         public Move[] GetPossibleMoves(Position position, Coordinate fromField)
         {
-            // TODO
+            Piece piece = position[fromField];
+            BaseMoveExpert moveExpert;
 
-            return null;
+            if (piece.Type == PieceType.None)
+                throw new ChessException($"Missing piece at {fromField}");
+
+            if (position.SideToMove != piece.Color || piece.Color == Color.None)
+                throw new ChessException("Incorrect piece color");
+
+            moveExpert = GetMoveExpert(piece.Type);
+
+            return moveExpert.GetPossibleMoves(position, fromField);
         }
 
         public Coordinate[] GetAttackedFields(Position position, Color side = Color.None)
@@ -133,6 +159,7 @@ namespace Chess
         {
             BaseMoveExpert moveExpert = GetMoveExpert(move.Piece.Type);
             moveExpert.PerformMove(position, move);
+            position.SideToMove = position.SideToMove == Color.White ? Color.Black : Color.White;
         }
 
         private BaseMoveExpert GetMoveExpert(PieceType pieceType)

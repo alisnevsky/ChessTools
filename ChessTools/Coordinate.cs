@@ -37,6 +37,46 @@
             }
         }
 
+        public static byte ParseFile(char cFile)
+        {
+            if (cFile < 'a' || cFile > 'h')
+                throw new ChessException($"Invalid file {cFile}");
+
+            return (byte)(cFile - 'a' + 1);
+        }
+
+        public static bool TryParseFile(char cFile, out byte file)
+        {
+            bool result = cFile >= 'a' && cFile <= 'h';
+
+            if (result)
+                file = (byte)(cFile - 'a' + 1);
+            else
+                file = 0;
+
+            return result;
+        }
+
+        public static byte ParseRank(char cRank)
+        {
+            if (cRank < '1' || cRank > '8')
+                throw new ChessException($"Invalid rank {cRank}");
+
+            return (byte)(cRank - '1' + 1);
+        }
+
+        public static bool TryParseRank(char cRank, out byte rank)
+        {
+            bool result = cRank >= '1' && cRank <= '8';
+
+            if (result)
+                rank = (byte)(cRank - '1' + 1);
+            else
+                rank = 0;
+
+            return result;
+        }
+
         public void Parse(string s)
         {
             // Expected a2, h8, etc.
@@ -98,6 +138,16 @@
             char r = (char)('1' + Rank - 1);
 
             return f.ToString() + r;
+        }
+
+        public static bool operator ==(Coordinate c1, Coordinate c2)
+        {
+            return c1._index == c2._index;
+        }
+
+        public static bool operator !=(Coordinate c1, Coordinate c2)
+        {
+            return c1._index != c2._index;
         }
     }
 }

@@ -14,7 +14,7 @@ namespace TestApp
     {
         static void Main(string[] args)
         {
-            using (StreamReader reader = File.OpenText(@"c:\Work\PGN\test.txt"))
+            using (StreamReader reader = File.OpenText(@"c:\Work\PGN\sample.txt"))
             {
 
                 Dictionary<string,string> c = new Dictionary<string,string>();
